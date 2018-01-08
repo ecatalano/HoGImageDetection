@@ -1,0 +1,3 @@
+/Users/Elliot/desktop/ImageDetector/CMakeFiles/rebuild_cache.dir
+/Users/Elliot/desktop/ImageDetector/CMakeFiles/edit_cache.dir
+/Users/Elliot/desktop/ImageDetector/CMakeFiles/ImageDetector.dir
