@@ -12,8 +12,6 @@ using namespace std;
 
 #include "opencv/cv.h"  
 
-
-
 using namespace cv;
 
 Mat ySobelOperator(Mat grayImg){
@@ -87,30 +85,64 @@ Mat computeOrientation(Mat xSobel, Mat ySobel){
 	}
 	return angle;
 }
+bool isInRange(int num, int high, int low){
+	if(num <= high && num >= low) return true;
+	return false;
+}
+Mat filterHSV(Mat hsv, int maxH, int minH, int maxS, int minS, int maxV, int minV){
+
+	Mat filtered = hsv;
+	for(int i = 0; i < hsv.rows; i++){
+		for(int j = 0; j < hsv.cols; j++){
+			int h = hsv.at<Vec3b>(i,j)[0];
+			int s = hsv.at<Vec3b>(i,j)[1];
+			int v = hsv.at<Vec3b>(i,j)[2];
+			
+			if(!isInRange(h, maxH, minH) || !isInRange(s, maxS, minS) || !isInRange(v, maxV, minV)){ 
+				filtered.at<Vec3b>(i,j)[0] = 0;
+				filtered.at<Vec3b>(i,j)[1] = 0;
+				filtered.at<Vec3b>(i,j)[2] = 0;
+
+			}
+
+			
+		}
+	}
+	return filtered;
+}
 
 int main(int argc, char** argv){
-
-	string inputImage = "fruits.png";
+	string inputImage = "shapes.png";
 
 	Mat image = imread(inputImage);
-	imshow("Input image", image);
 
-	Mat grayImg;
-	cvtColor(image, grayImg, CV_BGR2GRAY);
+	Mat hsv;
+	cvtColor(image, hsv, CV_BGR2HSV);
 
-	Mat xSobel = xSobelOperator(grayImg);
-	Mat ySobel = ySobelOperator(grayImg);
+	int maxH, minH;
+	int maxS, minS;
+	int maxV, minV;
 
-  	imshow("X Sobel", xSobel);
-  	imshow("Y Sobel", ySobel);
+	cout << "Please enter a minH value: ";
+	cin >> minH;
+	cout << "Please enter a maxH value: ";
+	cin >> maxH;
 
-	//Compute the magnitude and angle of 2D vectors.
-	Mat magnitude = computeMagnitude(xSobel, ySobel);
-	Mat angle = computeOrientation(xSobel, ySobel); 
-	
-	//imshow("Magnitude", magnitude);
-	imshow("Angle", angle);
+	cout << "Please enter a minS value: ";
+	cin >> minS;
+	cout << "Please enter a maxS value: ";
+	cin >> maxS;
 
+	cout << "Please enter a minV value: ";
+	cin >> minV;
+	cout << "Please enter a maxV value: ";
+	cin >> maxV;
+
+	Mat filtered = filterHSV(hsv, maxH, minH, maxS, minS, maxV, minV);
+	imshow("Filtered", filtered);
 	waitKey(0);
+	
+
+	//waitKey(0);
 
 }
